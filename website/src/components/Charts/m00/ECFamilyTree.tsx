@@ -108,7 +108,7 @@ export default function ECFamilyTree(): React.JSX.Element {
   ];
 
   const values = [
-    0,
+    88,
     // Level 1
     12, 14, 10, 8, 6, 10, 6, 10, 6, 6,
     // GA children

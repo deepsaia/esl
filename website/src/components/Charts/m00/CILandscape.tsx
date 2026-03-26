@@ -75,7 +75,7 @@ export default function CILandscape(): React.JSX.Element {
   ];
 
   const values = [
-    0,
+    100,
     25,
     8,
     35,
