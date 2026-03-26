@@ -1,0 +1,22 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Local build
+site/
+
+# Virtual environments
+.venv
+
+# Docusaurus
+website/node_modules/
+website/build/
+website/.docusaurus/
+
+# OS files
+*.zip
+*.log

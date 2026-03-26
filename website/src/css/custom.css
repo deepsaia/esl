@@ -1,0 +1,36 @@
+/**
+ * ES Learning Course — Custom CSS
+ * Teal/green color scheme to distinguish from RL course (indigo).
+ */
+
+:root {
+  --ifm-color-primary: #00897b;
+  --ifm-color-primary-dark: #007a6e;
+  --ifm-color-primary-darker: #007368;
+  --ifm-color-primary-darkest: #005f56;
+  --ifm-color-primary-light: #009688;
+  --ifm-color-primary-lighter: #009d8e;
+  --ifm-color-primary-lightest: #00b3a1;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #4db6ac;
+  --ifm-color-primary-dark: #36ac9f;
+  --ifm-color-primary-darker: #2ea697;
+  --ifm-color-primary-darkest: #268b7e;
+  --ifm-color-primary-light: #64c0b9;
+  --ifm-color-primary-lighter: #6ec4bd;
+  --ifm-color-primary-lightest: #8ed1cb;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* Task list checkboxes — make them interactive-looking */
+article ul li input[type='checkbox'] {
+  cursor: pointer;
+  width: 1.1em;
+  height: 1.1em;
+  margin-right: 0.4em;
+  accent-color: var(--ifm-color-primary);
+}

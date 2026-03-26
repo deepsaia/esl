@@ -1,0 +1,21 @@
+[project]
+name = "esl"
+version = "0.1.0"
+description = "Evolution Strategies Learning — a hands-on course"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "cma>=4.0.0",
+    "deap>=1.4.1",
+    "gymnasium>=1.2.0",
+    "loguru>=0.7.3",
+    "matplotlib>=3.10.6",
+    "neat-python>=0.92",
+    "nevergrad>=1.0.0",
+    "numpy>=2.3.2",
+    "optuna>=4.0.0",
+    "psutil>=7.0.0",
+    "pymoo>=0.6.1",
+    "scipy>=1.15.0",
+    "torch>=2.8.0",
+]
