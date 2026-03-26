@@ -1,37 +1,81 @@
-# CLAUDE.md - Project Guide for ES Learning (esl)
+# CLAUDE.md - Project Guide for ECL (Evolutionary Computation Learning)
 
 ## Project Overview
 
-This is a **hands-on Evolution Strategies course** - a structured, module-by-module curriculum that takes learners from zero to expertise in ES and evolutionary computation. It includes a documentation website (deployed to GitHub Pages) and runnable Python code for every concept.
+This is a **hands-on Evolutionary Computation course** - a structured, module-by-module curriculum that takes learners from zero to expertise in EC. It covers the full breadth of evolutionary computation: genetic algorithms, evolution strategies, genetic programming, differential evolution, swarm intelligence, neuroevolution, multi-objective optimization, quality-diversity, and more. It includes a documentation website (deployed to GitHub Pages) and runnable Python code for every concept.
 
-- **Repo**: `deepsaia/esl`
-- **Live site**: https://deepsaia.github.io/esl/
+- **Repo**: `deepsaia/ecl`
+- **Live site**: https://deepsaia.github.io/ecl/
 - **Author**: Deepak
 - **Python**: 3.13+ (managed with `uv`)
 - **Docs framework**: Docusaurus (React/Node.js), deployed via GitHub Actions to GitHub Pages
 
 ---
 
-## Module Structure
+## Module Structure (27 Modules, 9 Sections)
 
+### A. Foundations
 | Module | Topic |
 |--------|-------|
-| 00 | Introduction |
+| 00 | Introduction to Evolutionary Computation |
 | 01 | Optimization Foundations |
-| 02 | The (1+1)-ES |
-| 03 | Population-Based ES |
-| 04 | CMA-ES: The Crown Jewel |
-| 05 | CMA-ES Advanced |
-| 06 | Natural Evolution Strategies (NES) |
-| 07 | Neuroevolution |
-| 08 | OpenAI ES for RL |
-| 09 | Genetic Algorithms |
-| 10 | Multi-Objective Optimization |
-| 11 | Quality Diversity |
-| 12 | Constrained & Combinatorial Optimization |
-| 13 | Benchmarking |
-| 14 | Theory & Foundations |
-| 15 | Capstone |
+| 02 | Representation, Operators & Selection |
+
+### B. Genetic Algorithms
+| Module | Topic |
+|--------|-------|
+| 03 | Genetic Algorithms: Fundamentals |
+| 04 | Genetic Algorithms: Advanced Topics |
+
+### C. Evolution Strategies
+| Module | Topic |
+|--------|-------|
+| 05 | The (1+1)-ES |
+| 06 | Population-Based ES |
+| 07 | CMA-ES: The Crown Jewel |
+| 08 | CMA-ES Advanced & Natural Evolution Strategies |
+
+### D. Other EC Paradigms
+| Module | Topic |
+|--------|-------|
+| 09 | Genetic Programming |
+| 10 | Differential Evolution |
+| 11 | Estimation of Distribution Algorithms |
+| 12 | Coevolution, Memetic & Cultural Algorithms |
+
+### E. Swarm Intelligence
+| Module | Topic |
+|--------|-------|
+| 13 | Particle Swarm Optimization |
+| 14 | Ant Colony Optimization |
+| 15 | Other Swarm & Nature-Inspired Methods |
+
+### F. Multi-Objective & Diversity
+| Module | Topic |
+|--------|-------|
+| 16 | Multi-Objective Evolutionary Optimization |
+| 17 | Many-Objective & Decomposition Methods |
+| 18 | Quality-Diversity Algorithms |
+
+### G. Neuroevolution & Deep Learning
+| Module | Topic |
+|--------|-------|
+| 19 | Neuroevolution: Evolving Network Topology |
+| 20 | EC for Neural Network Training |
+| 21 | ES for RL & Policy Optimization |
+
+### H. Advanced Topics
+| Module | Topic |
+|--------|-------|
+| 22 | Constrained & Combinatorial EC |
+| 23 | Surrogate-Assisted & Expensive Optimization |
+| 24 | Learning Classifier Systems & Hyper-heuristics |
+
+### I. Rigor & Capstone
+| Module | Topic |
+|--------|-------|
+| 25 | Benchmarking & Experimental Methodology |
+| 26 | Theory, Foundations & Capstone |
 
 Code for each module lives in a directory named after the module (e.g., `m00/`, `m01/`). Each module's documentation lives in `website/docs/modules/`.
 
@@ -74,8 +118,9 @@ Each module page should follow this structure:
 
 - **Language**: Python 3.13+
 - **Package manager**: `uv`
-- **ES libraries**: cma (pycma), nevergrad, deap, evosax, pymoo, neat-python, qdax
+- **EC libraries**: cma (pycma), nevergrad, deap, evosax, pymoo, neat-python, qdax, pyswarms, gplearn
 - **ML libraries**: PyTorch, NumPy, SciPy, Gymnasium
+- **Benchmarking**: ioh (IOHprofiler)
 - **Experiment tracking**: Optuna
 - **Docs**: Docusaurus (React/Node.js), deployed via GitHub Actions to GitHub Pages
 - **Math rendering**: KaTeX (via remark-math + rehype-katex)
@@ -139,7 +184,7 @@ Each module page should follow this structure:
 ## Repository Layout
 
 ```
-esl/
+ecl/
   CLAUDE.md              # This file
   pyproject.toml         # Python project config (uv)
   website/               # Docusaurus site
@@ -149,14 +194,14 @@ esl/
     docs/                # Course documentation (Markdown/MDX)
       index.md           # Landing page
       contents.md        # Course roadmap
-      modules/           # m00.md through m15.md
+      modules/           # m00.mdx through m26.md
     src/
-      components/        # Custom React components (FeedbackWidget)
+      components/        # Custom React components (FeedbackWidget, Charts)
       clientModules/     # Client-side scripts (progress tracking)
       css/               # Custom styles
       theme/             # Swizzled Docusaurus theme components
     static/              # Static assets (favicon, images)
-  m00/ - m15/            # Module Python code directories
+  m00/ - m26/            # Module Python code directories
   .github/workflows/     # CI/CD (GitHub Actions -> GitHub Pages)
 ```
 

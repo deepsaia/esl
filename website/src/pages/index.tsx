@@ -7,8 +7,8 @@ import styles from './index.module.css';
 export default function Home(): React.JSX.Element {
   return (
     <Layout
-      title="Evolution Strategies - A Learning Journey"
-      description="A hands-on, code-first guide to Evolution Strategies and evolutionary computation"
+      title="Evolutionary Computation - A Learning Journey"
+      description="A hands-on, code-first guide to evolutionary computation - from genetic algorithms to CMA-ES and beyond"
     >
       <HomepageHeader />
       <main className={styles.main}>
@@ -17,7 +17,7 @@ export default function Home(): React.JSX.Element {
             <div className={styles.feature}>
               <div className={styles.featureIcon}>&#x1F4BB;</div>
               <h3>Code-First</h3>
-              <p>Every concept has runnable Python. No hand-waving - you'll implement ES algorithms from scratch.</p>
+              <p>Every concept has runnable Python. No hand-waving - you'll implement EC algorithms from scratch.</p>
             </div>
             <div className={styles.feature}>
               <div className={styles.featureIcon}>&#x1F4D0;</div>
@@ -27,15 +27,15 @@ export default function Home(): React.JSX.Element {
             <div className={styles.feature}>
               <div className={styles.featureIcon}>&#x1F30D;</div>
               <h3>Real-World Examples</h3>
-              <p>From robot locomotion to portfolio optimization - see how ES solves actual problems.</p>
+              <p>From robot locomotion to portfolio optimization - see how evolutionary methods solve actual problems.</p>
             </div>
           </div>
         </section>
 
         <section className={styles.modules}>
-          <h2 className={styles.sectionTitle}>16 Modules, Zero to Mastery</h2>
+          <h2 className={styles.sectionTitle}>27 Modules, Zero to Mastery</h2>
           <p className={styles.sectionSubtitle}>
-            A structured path from basic optimization to CMA-ES, neuroevolution, quality diversity, and beyond.
+            A structured path through genetic algorithms, evolution strategies, swarm intelligence, neuroevolution, and beyond.
           </p>
           <ModuleCards />
         </section>

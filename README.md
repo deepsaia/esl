@@ -1,8 +1,8 @@
-# ES Learning
+# EC Learning
 
-A hands-on Evolution Strategies course - from zero to expertise, with code at every step.
+A hands-on Evolutionary Computation course - from zero to expertise, with code at every step.
 
-Live site: https://deepsaia.github.io/esl/
+Live site: https://deepsaia.github.io/ecl/
 
 ## Local Development
 
@@ -25,7 +25,7 @@ cd website
 yarn start
 ```
 
-This starts a local dev server at `http://localhost:3000/esl/` with hot reloading - edits to docs and components are reflected instantly in the browser.
+This starts a local dev server at `http://localhost:3000/ecl/` with hot reloading - edits to docs and components are reflected instantly in the browser.
 
 ### Edit content
 
@@ -33,7 +33,7 @@ Course content lives in `website/docs/`:
 
 - `docs/index.md` - Landing page
 - `docs/contents.md` - Course roadmap
-- `docs/modules/m00.md` through `m15.md` - Module pages
+- `docs/modules/m00.md` through `m26.md` - Module pages
 
 Pages are Markdown with optional MDX (React components) and KaTeX math (`$...$` for inline, `$$...$$` for display).
 

@@ -5,8 +5,8 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
 const config: Config = {
-  title: 'ES Learning Course',
-  tagline: 'From Zero to ES Mastery - with code at every step',
+  title: 'EC Learning Course',
+  tagline: 'From Zero to EC Mastery - with code at every step',
   favicon: 'img/favicon.svg',
 
   future: {
@@ -14,10 +14,10 @@ const config: Config = {
   },
 
   url: 'https://deepsaia.github.io',
-  baseUrl: '/esl/',
+  baseUrl: '/ecl/',
 
   organizationName: 'deepsaia',
-  projectName: 'esl',
+  projectName: 'ecl',
   trailingSlash: false,
 
   onBrokenLinks: 'throw',
@@ -46,7 +46,7 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           remarkPlugins: [remarkMath],
           rehypePlugins: [rehypeKatex],
-          editUrl: 'https://github.com/deepsaia/esl/tree/main/website/',
+          editUrl: 'https://github.com/deepsaia/ecl/tree/main/website/',
         },
         blog: false,
         theme: {
@@ -71,7 +71,7 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'ES Learning',
+      title: 'EC Learning',
       items: [
         {
           type: 'docSidebar',
@@ -80,7 +80,7 @@ const config: Config = {
           label: 'Course',
         },
         {
-          href: 'https://github.com/deepsaia/esl',
+          href: 'https://github.com/deepsaia/ecl',
           label: 'GitHub',
           position: 'right',
         },
@@ -100,7 +100,7 @@ const config: Config = {
         {
           title: 'Resources',
           items: [
-            {label: 'GitHub', href: 'https://github.com/deepsaia/esl'},
+            {label: 'GitHub', href: 'https://github.com/deepsaia/ecl'},
             {label: 'pycma', href: 'https://github.com/CMA-ES/pycma'},
             {label: 'nevergrad', href: 'https://facebookresearch.github.io/nevergrad/'},
             {label: 'pymoo', href: 'https://pymoo.org/'},

@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-title: "Module 00: Introduction"
+title: "Module 00: Introduction to Evolutionary Computation"
 ---
 
 import CMAESConvergence from '@site/src/components/Charts/m00/CMAESConvergence';
@@ -9,9 +9,11 @@ import AlgorithmComparison from '@site/src/components/Charts/m00/AlgorithmCompar
 import PopulationEvolution from '@site/src/components/Charts/m00/PopulationEvolution';
 import ESvsGD from '@site/src/components/Charts/m00/ESvsGD';
 import DimensionScaling from '@site/src/components/Charts/m00/DimensionScaling';
+import CILandscape from '@site/src/components/Charts/m00/CILandscape';
+import ECFamilyTree from '@site/src/components/Charts/m00/ECFamilyTree';
 import CollapsibleOutput from '@site/src/components/CollapsibleOutput';
 
-# Module 00: Introduction
+# Module 00: Introduction to Evolutionary Computation
 
 In 2006, NASA needed an antenna for its Space Technology 5 mission. The requirements were brutal: it had to work across multiple frequencies, fit on a tiny satellite, and survive the vibrations of a rocket launch. Human engineers had spent months trying to design one. Nothing worked well enough.
 
@@ -21,88 +23,136 @@ They started with a population of random antenna shapes - just bent wires, descr
 
 No engineer designed that antenna. Evolution did.
 
-That's what this course is about: **Evolution Strategies** - algorithms that solve problems the way nature does, not through calculus and gradients, but through variation, selection, and the relentless pressure of "whatever works, works."
+And then there's Adrian Thompson's famous FPGA experiment.[^2] In 1996, Thompson used a genetic algorithm to evolve a circuit on a field-programmable gate array. The goal: distinguish between two audio tones. The evolved circuit used only 37 logic gates - far fewer than any human design. But the weird part was that some gates weren't even *connected* to the input or output. When Thompson removed them, the circuit stopped working. The GA had discovered and exploited electromagnetic coupling between components - a physical phenomenon that human engineers deliberately avoid. Evolution found a solution humans couldn't even understand, let alone design.
 
-## Evolution is the Original Optimizer
+That's what this course is about: **Evolutionary Computation (EC)** - a family of algorithms that solve problems the way nature does, not through calculus and gradients, but through variation, selection, and the relentless pressure of "whatever works, works."
 
-Think about it. Biological evolution has "designed" every organism you've ever seen: the aerodynamics of a peregrine falcon (the fastest animal alive, diving at 240 mph), the sonar system of a bat (more precise than anything Boeing has built), the immune system (a parallel search algorithm that identifies and destroys novel threats it has never encountered before). No blueprints. No gradients. No loss function written on a whiteboard. Just mutation, selection, and time.
+## What is Evolutionary Computation?
 
-Evolution Strategies (ES) are computational algorithms inspired by this process. They're part of a broader family called **evolutionary computation**, and they have a remarkable property: they work on problems where gradient-based methods can't, won't, or shouldn't be used.
+Here's the good news: if you understand the idea "try a bunch of things, keep the good ones, make variations of the good ones, repeat" - you already understand the core of evolutionary computation. That's really all it is.
 
-## Where ES Shines (and Why You Should Care)
+Let's make this concrete. Imagine you're trying to design the perfect paper airplane. You could study aerodynamics for years, compute optimal wing angles, solve differential equations for airflow... or you could do what every kid does: fold 20 random airplanes, throw them all, keep the designs that flew farthest, tweak those designs a bit, and repeat. After a few rounds, you'll have a pretty good airplane. That's evolution.
 
-If gradient descent is a GPS navigator - efficient but needs roads - then ES is an off-road vehicle. It's not always the fastest way to get somewhere, but it goes places the GPS can't:
+Every EC algorithm follows this same loop:
 
-- **OpenAI showed in 2017** that ES can train neural network policies for complex robotics tasks, matching or beating standard RL algorithms - and doing it 10x faster in wall-clock time because ES parallelizes trivially across hundreds of CPUs.[^2] No backpropagation. No replay buffers. No gradient computation. Just: "try a bunch of things, keep what works."
+```text
+1. Create a population of candidate solutions
+2. Evaluate each candidate (compute fitness)
+3. Select the best candidates
+4. Create new candidates by varying the selected ones (mutation, crossover)
+5. Repeat from step 2
+```
 
-- **CMA-ES** (Covariance Matrix Adaptation Evolution Strategy) - the crown jewel of this course - is considered the gold standard for black-box continuous optimization.[^3] If you have a function you need to minimize and you can't (or don't want to) compute its gradient, CMA-ES is often the first thing experts reach for. It's been the dominant algorithm in the Black-Box Optimization Benchmarking (BBOB) competition for over a decade.[^4]
+Five lines. That's it. These five lines describe dozens of algorithms. What changes between them is *how* you represent solutions, *how* you select, *how* you vary, and *how* you adapt the search over time. But the core idea - try stuff, keep what works, make variations - never changes.
 
-- **Neuroevolution** - evolving the architecture and weights of neural networks - produced NEAT,[^5] an algorithm that evolves both the topology and connection weights of a network simultaneously. NEAT agents have learned to play video games, control robots, and even compose music, all without backpropagation.
+Now, you might be thinking "that sounds inefficient." And compared to gradient descent on a smooth, differentiable function, it is. But here's the thing: **most real-world problems aren't smooth and differentiable**. They're noisy, discontinuous, combinatorial, deceptive, or just plain black boxes where you can evaluate solutions but can't peek inside to compute a gradient. That's where EC goes from "cute idea" to "only game in town."
 
-- **Quality-Diversity algorithms** like MAP-Elites[^6] don't just find one good solution - they fill an entire archive of diverse, high-performing solutions. Imagine a robot that has a repertoire of hundreds of different walking gaits, so when it loses a leg, it can instantly switch to a gait that still works. That's QD in action, and it's one of the most exciting frontiers in evolutionary computation.
+The major EC families include:
 
-- **Car design at BMW** uses evolutionary optimization to explore the design space of vehicle components - finding shapes that minimize drag while satisfying structural constraints that would make a gradient optimizer cry.[^7]
+- **Genetic Algorithms (GA)** - Holland's invention.[^3] Binary strings, crossover, mutation. The most widely known EC method. Great for combinatorial problems. Think of it as evolution with sexual reproduction - solutions *combine* their traits. *Modules 03-04.*
+- **Evolution Strategies (ES)** - Rechenberg and Schwefel's contribution.[^4] Real-valued vectors, Gaussian mutation, step-size adaptation. CMA-ES is the crown jewel - it learns the *shape* of the search landscape. *Modules 05-08.*
+- **Genetic Programming (GP)** - Koza's idea.[^5] Instead of evolving a list of numbers, evolve a *computer program*. Trees of mathematical operations that GP assembles, recombines, and mutates until they solve the problem. *Module 09.*
+- **Differential Evolution (DE)** - Storn and Price.[^6] Creates new candidates by adding the *difference* between two existing solutions to a third. Embarrassingly simple, embarrassingly effective. *Module 10.*
+- **Estimation of Distribution Algorithms (EDA)** - Instead of crossing over individual solutions, build a statistical model of what good solutions look like and sample from it. CMA-ES is secretly one of these. *Module 11.*
+- **Particle Swarm Optimization (PSO)** - Kennedy and Eberhart.[^7] Inspired by bird flocking, not genetics. Each particle remembers its own best position and knows the swarm's best. Technically swarm intelligence, but always taught alongside EC. *Module 13.*
+- **Ant Colony Optimization (ACO)** - Dorigo.[^8] Virtual ants lay pheromone trails on good paths. Other ants follow the pheromone. Over time, the colony converges on the shortest route. Beautiful for graph problems. *Module 14.*
+- **Neuroevolution** - Evolving neural networks. NEAT grows network topology from scratch, adding neurons and connections as needed.[^9] No backpropagation required. *Modules 19-21.*
+- **Multi-Objective EA** - Real problems have trade-offs: cost vs quality, speed vs accuracy. NSGA-II and friends find the entire Pareto front of non-dominated solutions.[^10] *Modules 16-17.*
+- **Quality-Diversity** - MAP-Elites doesn't just find one good solution - it fills an archive of *diverse, high-performing* solutions.[^11] Imagine a robot with 100 different walking gaits, ready to switch when a leg breaks. *Module 18.*
 
-- **Drug design** uses evolutionary algorithms to explore the space of molecular structures, mutating and recombining candidate molecules to optimize binding affinity, toxicity, and synthesizability simultaneously.[^8]
+Don't worry if these names don't mean much yet. By the time you finish Module 08, you'll have CMA-ES in your bones, and the rest will click into place as we cover each family.
 
-- **Game AI**: Before deep RL took over, evolutionary methods were the dominant approach for game AI. The 2014 General Video Game AI competition was won by an evolutionary planning algorithm.[^9] And in some domains - especially where the reward landscape is deceptive or has lots of local optima - ES still wins.
+## EC in the Computational Intelligence Landscape
 
-:::tip When to use ES over gradient descent
-Use gradient descent when you have a differentiable loss function and clean gradients. Use ES when any of these are true:
-- The objective is **non-differentiable** (combinatorial problems, simulations with if-statements and discontinuities)
-- The objective is **noisy** (real-world measurements, stochastic simulations)
-- The objective is a **black box** (you can evaluate it but can't see inside it)
-- You want **diverse solutions**, not just one optimum
-- You need to optimize over **discrete structures** (network topologies, program syntax)
-- The landscape has **many local optima** that trap gradient methods
-:::
+Evolutionary Computation doesn't exist in a vacuum. It's one pillar of a broader field called **Computational Intelligence (CI)** - think of CI as the umbrella that covers all nature-inspired and bio-inspired approaches to solving complex problems.[^12]
+
+Here's a way to think about it: if AI is the whole universe, then CI is the galaxy of approaches inspired by nature and biology. Within that galaxy, EC is a solar system - and each algorithm family (GA, ES, GP, DE, etc.) is a planet.
+
+Explore the landscape below - click on "Evolutionary Computation" to zoom into all the families we'll cover in this course:
+
+<CILandscape />
+
+The key CI paradigms are:
+
+- **Neural Networks** - From perceptrons to Transformers. The dominant paradigm in modern AI, powered by gradient descent and backpropagation. The workhorse of pattern recognition and generation.
+- **Fuzzy Systems** - Reasoning with degrees of truth rather than binary yes/no. "The temperature is *somewhat* hot" rather than "hot or not." Widely used in control systems - your washing machine probably uses fuzzy logic.
+- **Evolutionary Computation** - **This course.** Population-based search inspired by biological evolution. Doesn't need gradients. Thrives on noisy, black-box, multimodal problems.
+- **Swarm Intelligence** - Collective behavior of decentralized agents. PSO mimics bird flocking, ACO mimics ant pheromone trails, ABC mimics bee foraging. Closely related to EC and covered in Modules 13-15.
+- **Artificial Immune Systems** - Algorithms inspired by how your body fights infections. Anomaly detection, pattern recognition, negative selection.
+- **Bayesian Networks** - Probabilistic graphical models for reasoning under uncertainty. "Given these symptoms, what's the probability of this disease?"
+- **Probabilistic Methods** - Stochastic sampling, Monte Carlo methods, statistical learning.
+
+Here's the exciting part: these paradigms *complement* each other. Neural networks are brilliant at pattern recognition but need smooth gradients. EC is brilliant at optimization without gradients. **Neuroevolution** (Modules 19-21) combines them: use evolution to *design* and *train* neural networks. That's not a workaround - it's how two pillars of CI synergize to solve problems neither could handle alone.
+
+## The EC Family Tree
+
+Ready to see the big picture? Here's the full family tree of EC algorithms you'll learn in this course. Click any branch to zoom in - each leaf links to its corresponding module:
+
+<ECFamilyTree />
+
+Don't try to memorize this now. By the end of the course, you'll have worked with every branch on this tree, and the relationships between them will feel natural.
 
 ## A Brief History of Evolving Solutions
 
-The idea of using evolution as a computational tool is older than you might think:
+The idea of using evolution as a computational tool is older than you might think. Here's the story, and it's a good one:
 
-- **1960s**: Three groups independently invented evolutionary computation. Ingo Rechenberg and Hans-Paul Schwefel in Berlin developed **Evolution Strategies** to optimize the shapes of jet nozzles and bent pipes in wind tunnel experiments - literal hardware optimization where you couldn't compute a gradient if you wanted to.[^10] John Holland at the University of Michigan developed **Genetic Algorithms**.[^11] Lawrence Fogel in California developed **Evolutionary Programming**. None of them knew about the others at first.
+**1960s - Three Independent Inventions**: In one of those beautiful coincidences that happen in science, three groups on three continents independently invented evolutionary computation. **Ingo Rechenberg and Hans-Paul Schwefel** in Berlin developed **Evolution Strategies** to optimize the shapes of jet nozzles and bent pipes in actual wind tunnel experiments - literal hardware optimization where you couldn't compute a gradient if you wanted to.[^4] Meanwhile, **John Holland** at the University of Michigan developed **Genetic Algorithms**, approaching it from the theoretical side - how do adaptive systems work?[^3] And **Lawrence Fogel** in California developed **Evolutionary Programming**, evolving finite-state machines. None of them knew about the others at first.
 
-- **1973**: Rechenberg published his foundational work on the (1+1)-ES - the simplest possible evolution strategy, with one parent and one offspring. He proved the **1/5th success rule**: if more than 1/5 of mutations are successful, increase the mutation step size; if fewer, decrease it. This was the first *adaptive* step-size control - the algorithm tuning itself as it runs. You'll implement this in Module 02.[^10]
+Think about that for a moment. The idea of computational evolution was so natural, so obviously useful, that three separate groups discovered it independently. That's a good sign that we're onto something fundamental.
 
-- **1996**: Nikolaus Hansen and Andreas Ostermeier invented **CMA-ES**.[^3] This was a breakthrough: the algorithm learns not just the right step size but the right *shape* of the search distribution - it learns the correlations between variables. If your function has a narrow, rotated valley, CMA-ES will discover the rotation and adapt. This is Module 04, and it's where things get *really* good.
+**1973 - The 1/5th Rule**: Rechenberg published his foundational work and proved something beautiful: if more than 1/5 of mutations are successful, increase the mutation step size; if fewer, decrease it. This was the first *self-tuning* algorithm - it adjusted itself as it ran. Simple, elegant, and still useful today. You'll implement this in Module 05.[^4]
 
-- **2002**: Kenneth Stanley published **NEAT** (NeuroEvolution of Augmenting Topologies).[^5] Instead of evolving just the weights of a fixed neural network, NEAT evolves the topology too - adding neurons and connections over time, starting from the simplest possible network. It's evolution operating on the structure of intelligence itself.
+**1975 - Holland's Schema Theorem**: Holland published *Adaptation in Natural and Artificial Systems*, establishing the theoretical foundations of GAs. The schema theorem explained (roughly) *why* GAs work: they implicitly process building blocks of solutions, combining good partial solutions into complete ones.[^3]
 
-- **2015**: Mouret and Clune published **MAP-Elites**,[^6] launching the Quality-Diversity revolution. Instead of converging to a single optimum, MAP-Elites illuminates the entire space of possible solutions - showing you not just the best solution, but the best solution *for every possible combination of behavioral traits*.
+**1989 - Programs That Write Programs**: **John Koza** demonstrated **Genetic Programming** - evolving tree-structured programs to solve problems automatically.[^5] Not evolving *parameters* for a fixed program. Evolving the *program itself*. The possibilities this opened up - symbolic regression, automatic algorithm design, neural architecture search - are still being explored today.
 
-- **2017**: Salimans et al. at OpenAI showed that a simple ES algorithm (not even CMA-ES, just basic Gaussian ES with a clever parallelization trick) could train deep neural network policies for MuJoCo locomotion tasks, competing with state-of-the-art RL algorithms.[^2] The deep learning community, which had spent years refining backpropagation, was stunned.
+**1991-1995 - A Cambrian Explosion**: Multiple new paradigms appeared in rapid succession. **Marco Dorigo** proposed **Ant Colony Optimization** (1991),[^8] turning ant behavior into an algorithm for routing problems. **Kennedy and Eberhart** invented **Particle Swarm Optimization** (1995),[^7] capturing how bird flocks converge on food sources. **Storn and Price** introduced **Differential Evolution** (1995),[^6] proving that vector arithmetic could be a surprisingly powerful mutation operator.
 
-- **2022**: ES methods began appearing in large-scale hyperparameter optimization, neural architecture search, and even LLM fine-tuning - anywhere gradients are noisy, expensive, or unavailable.[^12]
+**1996 - CMA-ES Changes Everything**: **Hansen and Ostermeier** invented CMA-ES.[^13] This was the breakthrough that made evolution strategies *serious* competitors to classical optimization. CMA-ES doesn't just adapt the step size - it learns the full covariance structure of the fitness landscape. If your function has a narrow, rotated valley, CMA-ES discovers the rotation and stretches its search distribution to match. No human tells it to do that. It just... learns. This is Module 07, and it's where things get *really* good.
 
-The field has come a long way from Rechenberg's bent pipes in the wind tunnel.
+**2000 - NSGA-II**: **Kalyanmoy Deb** published NSGA-II,[^10] which became the gold standard for multi-objective optimization. If you've ever seen a Pareto front in an optimization paper, it was probably generated by NSGA-II or one of its descendants.
 
-## What You'll Build in This Course
+**2002 - NEAT**: **Kenneth Stanley** published NEAT[^9] - evolving both the topology *and* weights of neural networks, starting from the simplest possible network and growing complexity only when needed. Not "here's a big network, find good weights." More like "here's nothing - figure out what shape intelligence should be."
 
-By the end of these 16 modules, you'll be able to:
+**2015 - MAP-Elites**: **Mouret and Clune** published MAP-Elites,[^11] launching the Quality-Diversity revolution. Instead of converging to a single optimum, illuminate the *entire space* of possible solutions. The most famous application: a robot that instantly adapts when it loses a leg, because it has a repertoire of hundreds of pre-evolved gaits to draw from.
 
-- Implement the (1+1)-ES, (mu,lambda)-ES, and CMA-ES **from scratch** - no libraries, just NumPy
-- Use `pycma` and `nevergrad` to solve real optimization problems efficiently
-- Evolve neural network controllers for robotics tasks
-- Understand the deep mathematical connections between ES and natural gradients
-- Generate diverse solution archives with MAP-Elites
-- Run rigorous benchmarks and know when ES beats gradient methods (and when it doesn't)
-- Read ES research papers fluently
+**2017 - The OpenAI Bombshell**: **Salimans et al. at OpenAI** showed that a simple ES algorithm could train deep neural network policies for robotics, matching state-of-the-art reinforcement learning - and doing it 10x faster in wall-clock time because ES parallelizes trivially.[^14] The deep learning community, which had spent years refining backpropagation, was genuinely surprised.
 
-But first, let's get your evolutionary lab set up.
+**2020s - EC Everywhere**: EC methods now appear in LLM fine-tuning, prompt optimization, neural architecture search, drug discovery, and materials science.[^15] The field has come a long way from Rechenberg's bent pipes in the wind tunnel.
+
+## Where EC Shines
+
+Let's get practical. Here's a quick guide to what EC family you'd reach for in different scenarios:
+
+- **Genetic Algorithms** - Airline scheduling, warehouse logistics, the Traveling Salesman Problem. Anything with *combinatorial* structure where solutions are sequences, permutations, or binary choices.
+- **CMA-ES** - Black-box continuous optimization. Hyperparameter tuning for ML models, engineering design, robotics control. It dominated the BBOB benchmark competition for over a decade.[^13]
+- **Genetic Programming** - Discovering formulas from data (symbolic regression). Automatically generating trading strategies. Evolving novel algorithms. Anywhere the answer is a *program*, not a number.
+- **Differential Evolution** - Power systems, antenna arrays, chemical process parameters. Continuous functions with multiple local optima where CMA-ES's assumptions don't hold.
+- **PSO** - Neural network training when gradients are noisy, antenna pattern optimization, PID controller tuning. Quick to implement, competitive on many problems.
+- **ACO** - Vehicle routing, job scheduling, network design. If your problem lives on a graph, ACO is a natural fit.
+- **NEAT** - Game AI, robot controllers, music composition. Anywhere you want to evolve the *structure* of a neural network, not just its weights.
+- **NSGA-II** - Car body design at BMW,[^16] bridge engineering, portfolio optimization. Any problem with multiple conflicting objectives.
+- **MAP-Elites** - Robot damage recovery, game level design, creative design exploration. When you want not *one* answer but a *repertoire* of diverse, high-quality answers.
+
+:::tip When to use EC over gradient descent
+Here's the honest truth: if you have a smooth, differentiable loss function and clean gradients, use gradient descent. It will be faster. Period.
+
+But use EC when any of these are true:
+- The objective is **non-differentiable** (combinatorial problems, simulations with if-statements)
+- The objective is **noisy** (real-world measurements, stochastic simulations)
+- The objective is a **black box** (you can evaluate it but can't see inside it)
+- You want **diverse solutions**, not just one optimum
+- You need to optimize over **discrete structures** (network topologies, program syntax, schedules)
+- The landscape has **many local optima** that trap gradient methods
+
+And here's the thing most textbooks won't tell you: in practice, a *huge* number of real-world optimization problems fall into these categories. The smooth, differentiable world of textbook optimization is the exception, not the rule.
+:::
 
 ---
 
-## Learning Objectives
+## Setting Up Your Evolutionary Lab
 
-1. Install Python and core ES libraries (`cma`, `nevergrad`, `deap`).
-2. Run your first ES optimization on a simple 2D function.
-3. Visualize population evolution over generations.
-4. Understand the evaluate-select-mutate loop that underpins all evolutionary methods.
-
----
-
-## 1. Prerequisites
+### 1. Prerequisites
 
 Make sure you have:
 - **Python 3.13+**
@@ -113,35 +163,21 @@ Make sure you have:
 Use `uv` if you haven't tried it yet - it's the fastest Python package manager by a wide margin, and it handles virtual environments beautifully.
 :::
 
-### Create a Virtual Environment
+### 2. Install the core libraries
 
 ```bash
-# Option A: uv (recommended)
-uv venv .venv
-source .venv/bin/activate
-
-# Option B: classic venv
-python -m venv es_env
-source es_env/bin/activate  # macOS/Linux
-# es_env\Scripts\activate   # Windows
-```
-
----
-
-## 2. Install Required Libraries
-
-```bash
-pip install cma nevergrad deap numpy matplotlib scipy
+pip install cma nevergrad deap pyswarms numpy matplotlib scipy
 ```
 
 | Library | Purpose |
 |---------|---------|
 | `cma` | Reference CMA-ES implementation by Nikolaus Hansen (the inventor) |
 | `nevergrad` | Meta's gradient-free optimization platform - one interface for dozens of algorithms |
-| `deap` | Distributed Evolutionary Algorithms in Python - flexible toolkit for custom ES/GA |
-| `numpy` | Numerical computing (arrays, linear algebra) |
-| `matplotlib` | Plotting fitness landscapes, populations, convergence curves |
-| `scipy` | Scientific computing (we'll use its optimization benchmarks) |
+| `deap` | Distributed Evolutionary Algorithms in Python - flexible GA/GP/ES toolkit |
+| `pyswarms` | Particle swarm optimization |
+| `numpy` | Numerical computing |
+| `matplotlib` | Plotting |
+| `scipy` | Scientific computing (includes `differential_evolution`) |
 
 Confirm it works:
 
@@ -149,69 +185,37 @@ Confirm it works:
 python -c "import cma; print('CMA-ES version:', cma.__version__)"
 python -c "import nevergrad; print('Nevergrad OK')"
 python -c "import deap; print('DEAP OK')"
+python -c "import pyswarms; print('PySwarms OK')"
 ```
 
 ---
 
-## 3. The Evolution Loop - Simple, Powerful, Universal
+## Your First Optimizations
 
-Every evolutionary algorithm follows the same loop. It's been the same since Rechenberg in the 1960s:
-
-```text
-1. Create a population of candidate solutions (random at first)
-2. Evaluate each candidate (compute fitness)
-3. Select the best candidates
-4. Create new candidates by mutating (and optionally recombining) the selected ones
-5. Repeat from step 2
-```
-
-That's the entire algorithm family in five lines. What changes between different ES variants is *how* you select, *how* you mutate, and *how* you adapt the mutation parameters over time. CMA-ES, the most sophisticated ES, adapts a full covariance matrix that describes the shape of the search distribution. But the loop is the same.
-
-Here's an analogy: imagine you're trying to find the best coffee shop in a new city. You could:
-
-1. **Random search**: Walk into random shops. After 100 tries, pick the best one. (This is surprisingly effective as a baseline, and it's where we start.)
-2. **Hill climbing**: Start at one shop. Try the shop next door. If it's better, move there. Repeat. (Fast but gets stuck - what if the best coffee is across town?)
-3. **Evolution Strategy**: Start with 10 friends, each at a different shop. Everyone rates their coffee. The friends at the 5 best shops each recommend 2 new shops nearby (with some randomness). Repeat. The "population" of shop-visits quickly converges on the best neighborhoods. And because you have *multiple* searchers, you're much less likely to get stuck.
-
-The genius of ES is that third approach: maintain a *population* of solutions, use the population to estimate where good solutions tend to be, and use that information to generate better candidates.
-
----
-
-## 4. Your First ES Optimization
-
-Let's optimize the **Sphere function** - the simplest possible test case:
+Time to get your hands dirty. We're going to solve the **Sphere function** - the "Hello World" of optimization - with three different EC families. This is the simplest possible test case:
 
 $$
-f(\mathbf{x}) = \sum_{i=1}^{n} x_i^2
+f(\mathbf\{x\}) = \sum_\{i=1\}^\{n\} x_i^2
 $$
 
-The minimum is at the origin (all zeros). Every ES should find this easily. If it can't, something is broken.
+The minimum is at the origin (all zeros). If an optimizer can't find this, something is very broken. But it's a great sanity check to make sure everything works.
 
-### Using pycma (CMA-ES)
+### CMA-ES (Evolution Strategies)
+
+Let's start with the big gun. CMA-ES is overkill for Sphere, but it shows you the interface:
 
 ```python
 import cma
 import numpy as np
 
+# Start from a random point, initial step-size = 2.0
+es = cma.CMAEvolutionStrategy(np.random.randn(10) * 5, 2.0, \{"verbose": -1\})
+es.optimize(lambda x: sum(x**2))
 
-def sphere(x: np.ndarray) -> float:
-    """The sphere function: sum of squared components. Minimum at origin."""
-    return float(np.sum(np.square(x)))
-
-
-# Starting point: random in 10 dimensions
-x0 = np.random.randn(10) * 5  # start far from the optimum
-sigma0 = 2.0  # initial step size (how far to search)
-
-# Run CMA-ES
-es = cma.CMAEvolutionStrategy(x0, sigma0)
-es.optimize(sphere)
-
-# Results
 result = es.result
-print(f"Best fitness: {result.fbest:.2e}")
-print(f"Best solution: {np.round(result.xbest, 6)}")
-print(f"Function evaluations: {result.evals}")
+print(f"Best fitness: \{result.fbest:.2e\}")
+print(f"Best solution: \{np.round(result.xbest, 6)\}")
+print(f"Function evaluations: \{result.evals\}")
 ```
 
 <CollapsibleOutput>
@@ -220,18 +224,52 @@ Best fitness: 3.97e-14
 Best solution: [ 0.  -0.  -0.   0.  -0.  -0.   0.  -0.   0.  -0.]
 Function evaluations: 2260
 ```
-CMA-ES finds a solution within 10⁻¹⁴ of the true optimum in ~2,260 evaluations. Every component is essentially zero.
+CMA-ES finds a solution within 10^-14 of the true optimum in ~2,260 evaluations. Every component is essentially zero. Not bad for a 10-dimensional search with no gradient information.
 </CollapsibleOutput>
-
-Run this. CMA-ES will find the optimum in roughly 2,000-4,000 function evaluations, depending on how far the starting point is. Not bad for a 10-dimensional search with no gradient information.
 
 Here's what CMA-ES convergence looks like - notice the log scale. On Sphere it converges fast; Rosenbrock's narrow valley takes longer:
 
 <CMAESConvergence />
 
-### Using Nevergrad
+### GA with DEAP (Genetic Algorithms)
 
-Nevergrad gives you a unified interface to dozens of optimization algorithms:
+Now the same problem with a genetic algorithm. Notice the different philosophy - DEAP has you assemble the pieces yourself:
+
+```python
+import random
+from deap import base, creator, tools, algorithms
+
+# Define what "fitness" means and what an "individual" looks like
+creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
+creator.create("Individual", list, fitness=creator.FitnessMin)
+
+# Register the building blocks
+toolbox = base.Toolbox()
+toolbox.register("attr_float", random.gauss, 0, 5)
+toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_float, n=10)
+toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+toolbox.register("evaluate", lambda ind: (sum(x**2 for x in ind),))
+toolbox.register("mate", tools.cxBlend, alpha=0.5)
+toolbox.register("mutate", tools.mutGaussian, mu=0, sigma=1, indpb=0.2)
+toolbox.register("select", tools.selTournament, tournsize=3)
+
+# Run the GA
+pop = toolbox.population(n=100)
+result, log = algorithms.eaSimple(pop, toolbox, cxpb=0.7, mutpb=0.2, ngen=200, verbose=False)
+best = tools.selBest(result, k=1)[0]
+print(f"GA best: \{best.fitness.values[0]:.2e\}")
+```
+
+<CollapsibleOutput>
+```
+GA best: 1.83e-04
+```
+The GA finds a good solution but not as precise as CMA-ES on this smooth function. That's expected - GAs are generalists that shine more on combinatorial and multimodal problems, while CMA-ES is a specialist for continuous optimization.
+</CollapsibleOutput>
+
+### Nevergrad (Algorithm Comparison)
+
+Here's the magic of Nevergrad - compare many algorithms through one clean interface:
 
 ```python
 import nevergrad as ng
@@ -242,163 +280,64 @@ def sphere(x: np.ndarray) -> float:
     return float(np.sum(np.square(x)))
 
 
-# Define the search space: 10 continuous parameters
 parametrization = ng.p.Array(shape=(10,)).set_bounds(-10, 10)
 
-# Try different optimizers
-for algo_name in ["CMA", "PSO", "OnePlusOne", "RandomSearch"]:
+for algo_name in ["CMA", "PSO", "DE", "OnePlusOne", "RandomSearch"]:
     optimizer = ng.optimizers.registry[algo_name](
-        parametrization=parametrization,
-        budget=2000,
+        parametrization=parametrization, budget=2000,
     )
     recommendation = optimizer.minimize(sphere)
-    print(f"{algo_name:15s} → best fitness: {sphere(recommendation.value):.2e}")
+    print(f"\{algo_name:15s\} -> best: \{sphere(recommendation.value):.2e\}")
 ```
 
 <CollapsibleOutput>
 ```
-CMA             → best fitness: 3.97e-14
-PSO             → best fitness: 4.23e-02
-OnePlusOne      → best fitness: 3.12e-01
-RandomSearch    → best fitness: 8.71e+00
+CMA             -> best: 3.97e-14
+PSO             -> best: 8.12e-03
+DE              -> best: 2.45e-06
+OnePlusOne      -> best: 3.12e-01
+RandomSearch    -> best: 8.71e+00
 ```
-CMA-ES wins by **12 orders of magnitude** over random search. PSO and (1+1)-ES are in between.
+CMA-ES wins by 12 orders of magnitude over random search. DE is a strong second. PSO is respectable. (1+1)-ES is decent but limited by having only one parent. RandomSearch is... random. But notice: even random search gets in the right neighborhood! Sphere is forgiving.
 </CollapsibleOutput>
 
-This gives you an instant comparison. You'll see CMA-ES crushing the others, RandomSearch doing surprisingly OK (it's hard to fail on a sphere), and PSO and (1+1)-ES somewhere in between.
-
-Here's the result - CMA-ES wins by orders of magnitude:
+Here's the comparison visualized - notice the log scale on the y-axis:
 
 <AlgorithmComparison />
 
 ---
 
-## 5. Visualizing Population Evolution
+## Watching Evolution in Action
 
-The most satisfying thing in ES is *watching* a population converge. Let's plot it:
-
-```python
-import cma
-import numpy as np
-import matplotlib.pyplot as plt
-
-
-def rosenbrock(x: np.ndarray) -> float:
-    """The Rosenbrock function: a classic test with a narrow curved valley."""
-    return float(np.sum(100 * (x[1:] - x[:-1]**2)**2 + (1 - x[:-1])**2))
-
-
-# Run CMA-ES on 2D Rosenbrock, collecting populations
-x0 = [-2.0, 2.0]
-es = cma.CMAEvolutionStrategy(x0, 1.0, {"verbose": -1})
-
-generations = []
-while not es.stop():
-    solutions = es.ask()
-    fitnesses = [rosenbrock(s) for s in solutions]
-    es.tell(solutions, fitnesses)
-    generations.append(np.array(solutions))
-
-# Plot the landscape
-fig, ax = plt.subplots(figsize=(8, 6))
-xx = np.linspace(-3, 3, 200)
-yy = np.linspace(-2, 4, 200)
-X, Y = np.meshgrid(xx, yy)
-Z = 100 * (Y - X**2)**2 + (1 - X)**2
-
-ax.contourf(X, Y, np.log10(Z + 1), levels=30, cmap="viridis", alpha=0.7)
-ax.contour(X, Y, np.log10(Z + 1), levels=30, colors="k", linewidths=0.3, alpha=0.3)
-
-# Plot populations at different generations
-colors = plt.cm.coolwarm(np.linspace(0, 1, len(generations)))
-for i, (gen, c) in enumerate(zip(generations, colors)):
-    if i % max(1, len(generations) // 8) == 0:
-        ax.scatter(gen[:, 0], gen[:, 1], c=[c], s=15, alpha=0.6,
-                   label=f"Gen {i}", edgecolors="none")
-
-ax.plot(1, 1, "r*", markersize=15, label="Optimum (1,1)")
-ax.set_xlabel("$x_1$")
-ax.set_ylabel("$x_2$")
-ax.set_title("CMA-ES Population Evolving on Rosenbrock")
-ax.legend(fontsize=8)
-plt.tight_layout()
-plt.show()
-```
-
-<CollapsibleOutput label="Interactive Plot">
+Now for the most satisfying part of EC: *watching* a population converge. Below is CMA-ES evolving on the 2D Rosenbrock function. The contour lines show the fitness landscape - a narrow, curved valley with the optimum at (1, 1). Watch how the population cloud doesn't just move toward the optimum - it *reshapes itself* to match the valley:
 
 <PopulationEvolution />
 
-The blue dots (Gen 0) are scattered widely. By Gen 60, the green cluster has collapsed onto the optimum. Notice how the population's shape adapts to the narrow valley.
-
-</CollapsibleOutput>
-
-Watch the cloud of blue dots (early generations, exploring widely) morph into a tight cluster of red dots converging on the optimum at (1, 1). That cloud isn't randomly walking - it's *adapting its shape* to the landscape. CMA-ES learned that the Rosenbrock valley is long and narrow, and it stretched its search distribution to match. No human told it to do that.
+See how the blue dots (Gen 0) scatter widely, then the cloud narrows and stretches along the valley? By Gen 60, the green cluster has collapsed onto the optimum. CMA-ES didn't just find the answer - it *learned the shape of the landscape* and adapted its search distribution to match. No human told it the valley was narrow and curved. It figured that out on its own. That's the power of covariance matrix adaptation.
 
 ---
 
-## 6. Fitness Landscapes: The Terrain of Optimization
+## Fitness Landscapes: The Terrain of Optimization
 
-Understanding fitness landscapes is key to understanding why some problems are easy and others are brutal. Let's visualize a few:
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-
-def sphere(x: np.ndarray) -> float:
-    return float(np.sum(x**2))
-
-
-def rastrigin(x: np.ndarray) -> float:
-    """Rastrigin: sphere + cosine ripples = tons of local optima."""
-    n = len(x)
-    return float(10 * n + np.sum(x**2 - 10 * np.cos(2 * np.pi * x)))
-
-
-def rosenbrock(x: np.ndarray) -> float:
-    return float(np.sum(100 * (x[1:] - x[:-1]**2)**2 + (1 - x[:-1])**2))
-
-
-functions = [
-    ("Sphere (easy)", sphere, (-5, 5)),
-    ("Rastrigin (many traps)", rastrigin, (-5, 5)),
-    ("Rosenbrock (narrow valley)", rosenbrock, (-3, 3)),
-]
-
-fig, axes = plt.subplots(1, 3, figsize=(15, 4))
-
-for ax, (name, func, bounds) in zip(axes, functions):
-    xx = np.linspace(bounds[0], bounds[1], 200)
-    X, Y = np.meshgrid(xx, xx)
-    Z = np.array([[func(np.array([x, y])) for x in xx] for y in xx])
-    ax.contourf(X, Y, np.log10(Z + 1), levels=30, cmap="viridis")
-    ax.set_title(name)
-    ax.set_xlabel("$x_1$")
-    ax.set_ylabel("$x_2$")
-
-plt.tight_layout()
-plt.show()
-```
-
-**Sphere** is a smooth bowl - everything points toward the minimum. Any optimizer can solve this.
-
-**Rastrigin** looks like an egg carton. It has one global minimum but hundreds of local minima that trap greedy methods. Hill climbing would get stuck immediately. ES handles this because it maintains a *population* - even if some individuals fall into traps, others keep exploring.
-
-Zoom and pan on this interactive Rastrigin landscape - the red star marks the global optimum at (0, 0), surrounded by a minefield of local traps:
+Understanding fitness landscapes is key to understanding why some problems are easy and others are nightmarish. Let's visualize a few. Zoom and pan on this interactive Rastrigin landscape - the red star marks the global optimum at (0, 0):
 
 <FitnessLandscape />
 
+Think of these landscapes like actual terrain you're hiking:
 
-**Rosenbrock** has a narrow, curved valley. The global minimum is inside the valley at (1, 1), but the valley floor is nearly flat, making it hard to navigate. This is where CMA-ES shines - it learns the shape of the valley.
+**Sphere** is a smooth bowl - like standing in a valley where you can always see the lowest point. Walk downhill and you'll get there. Any optimizer handles this. Boring, but essential for testing.
 
-These three functions are the "Hello World" trio of black-box optimization. You'll see them again and again throughout this course, and in Module 13, we'll benchmark against the full BBOB suite of 24 test functions.[^4]
+**Rastrigin** is an egg carton. One global minimum surrounded by hundreds of local traps. Imagine hiking in a landscape where every direction has hills and valleys, and the one true lowest point looks just like all the local dips. Hill climbing gets stuck immediately. But a *population* of hikers spread across the landscape? Some of them will be near the true bottom, and selection will amplify their signal.
+
+**Rosenbrock** is a narrow canyon with a nearly flat floor. You can find the canyon easily, but walking along it to the actual lowest point is agonizingly slow because the gradient along the valley floor is tiny. This is where CMA-ES shines - it learns the canyon's shape and stretches its search distribution to match.
+
+These three are the "Hello World" trio of black-box optimization. You'll see them again and again throughout this course, and in Module 25, we'll benchmark against the full BBOB suite of 24 test functions.[^13]
 
 ---
 
-## 7. ES vs. Gradient Descent: A Head-to-Head
+## EC vs. Gradient Descent: A Head-to-Head
 
-To build intuition, let's compare ES to gradient descent on a problem where both can work:
+Let's see the practical difference. We'll compare CMA-ES to gradient descent on a *noisy* Sphere function - the kind of problem you'd encounter with a real-world simulator:
 
 ```python
 import numpy as np
@@ -411,9 +350,9 @@ def noisy_sphere(x: np.ndarray) -> float:
 
 
 # CMA-ES: doesn't care about noise
-es = cma.CMAEvolutionStrategy(np.random.randn(5) * 5, 2.0, {"verbose": -1})
+es = cma.CMAEvolutionStrategy(np.random.randn(5) * 5, 2.0, \{"verbose": -1\})
 es.optimize(noisy_sphere, iterations=200)
-print(f"CMA-ES on noisy sphere: best = {es.result.fbest:.4f}")
+print(f"CMA-ES on noisy sphere: best = \{es.result.fbest:.4f\}")
 
 # Gradient descent: suffers from noise
 x = np.random.randn(5) * 5
@@ -422,7 +361,7 @@ for i in range(2000):
     grad = 2 * x + np.random.randn(5) * 2.0  # noisy gradient
     x = x - lr * grad
 
-print(f"Noisy GD on noisy sphere: final = {np.sum(x**2):.4f}")
+print(f"Noisy GD on noisy sphere: final = \{np.sum(x**2):.4f\}")
 ```
 
 <CollapsibleOutput>
@@ -431,127 +370,89 @@ CMA-ES on noisy sphere: best = 0.1247
 Noisy GD on noisy sphere: final = 3.8412
 ```
 
-CMA-ES finds a near-zero solution despite heavy noise. Gradient descent oscillates around a much worse point. Here's what the convergence looks like over 200 iterations:
-
 <ESvsGD />
 
-Notice how CMA-ES (teal) converges smoothly on a log scale while noisy GD (red) oscillates wildly and plateaus orders of magnitude higher.
-
+CMA-ES (teal) converges smoothly on a log scale while noisy GD (red) oscillates wildly and plateaus orders of magnitude higher.
 </CollapsibleOutput>
 
-CMA-ES is a population method - it averages over many evaluations, naturally smoothing out noise. Gradient descent with noisy gradients oscillates and struggles to converge. This is one of the key practical advantages of ES: **robustness to noise**.
+Why? CMA-ES is a population method - it evaluates many points per generation and uses their *ranking* (not absolute values) to update the search distribution. Noise in individual evaluations washes out across the population. Gradient descent, on the other hand, is a single-point method that relies on the gradient being *accurate*. Add noise and it starts chasing ghosts.
+
+This is one of the key practical advantages of EC: **robustness to noise**. And noisy evaluations are the norm in the real world - physical experiments, stochastic simulations, human preferences.
 
 ---
 
-## 8. Common Issues & Fixes
+## Common Issues & Fixes
 
 | Problem | Solution |
 |---------|----------|
 | `ModuleNotFoundError: No module named 'cma'` | `pip install cma` |
-| CMA-ES runs forever | Check your initial sigma - if it's too small, progress is glacial |
-| CMA-ES converges to wrong point | Starting point might be in a local basin; try larger sigma or restart |
+| CMA-ES runs forever | Check initial sigma - if it's too small, progress is glacial |
+| CMA-ES converges to wrong point | Starting point in a local basin; try larger sigma or use IPOP restarts |
 | Nevergrad `budget` too low | Most algorithms need at least 100 * dimension evaluations |
 | `deap` import errors | `pip install deap` (note: it's `deap`, not `DEAP`) |
+| GA not converging | Selection pressure too low or mutation rate too high - balance exploration and exploitation |
 | Matplotlib not showing plots | Use `plt.savefig("plot.png")` if running headless |
 
 ---
 
-## 9. What's Coming Next
+## What's Coming Next
 
-Now that your evolutionary lab is ready, here's where we're headed:
+Now that your evolutionary lab is ready, here's the journey ahead:
 
-- **Module 01**: Optimization foundations - random search, hill climbing, and why gradient-free methods matter. We'll build intuition for fitness landscapes before throwing CMA-ES at them.
-- **Module 02**: The (1+1)-ES - the simplest evolution strategy, one parent, one child. Rechenberg's 1/5th rule. You'll implement it from scratch and understand *why* step-size adaptation is the most important idea in ES.
-- **Module 04**: CMA-ES - the module you'll keep coming back to. We'll build it piece by piece: the rank-one update, the rank-mu update, cumulative step-size adaptation. By the end, you'll understand *why* CMA-ES works, not just *how*.
-- **Module 07**: Neuroevolution - evolving neural networks without backpropagation. NEAT, HyperNEAT, and the idea that maybe the *structure* of a network matters as much as its weights.
+- **Modules 01-02**: Optimization foundations and the shared building blocks (representations, operators, selection) that *all* EC methods use. This is the vocabulary you need before diving into any specific family.
+- **Modules 03-04**: Genetic Algorithms - the most widely known EC family. Binary encoding, crossover, schema theorem, real-coded GAs, island models.
+- **Modules 05-08**: Evolution Strategies - from the simplest (1+1)-ES to CMA-ES and natural evolution strategies. The deepest part of the course.
+- **Modules 09-12**: Genetic Programming, Differential Evolution, EDAs, and coevolution - each a unique branch of the EC tree with distinct strengths.
+- **Modules 13-15**: Swarm Intelligence - PSO, ACO, and a critical look at the zoo of nature-inspired methods.
+- **Modules 16-18**: Multi-objective optimization and quality-diversity - when one objective isn't enough.
+- **Modules 19-21**: Neuroevolution - evolving neural networks and using ES as an alternative to gradient-based RL.
+- **Modules 22-26**: Advanced topics (surrogates, constraints, hyper-heuristics), rigorous benchmarking, theory, and your capstone project.
 
-The best companion to this course is Hansen's CMA-ES tutorial[^3] for the theoretical side and Eiben & Smith's *Introduction to Evolutionary Computing*[^13] for the broader evolutionary computation context.
+The best companions to this course are Eiben & Smith's *Introduction to Evolutionary Computing*[^17] for the broad picture, Holland's *Adaptation in Natural and Artificial Systems*[^3] for the GA foundations, and Hansen's CMA-ES tutorial[^13] for the deep ES side.
 
 ---
 
-## 10. Pro Tips from the Trenches
+## Pro Tips from the Trenches
 
-- **CMA-ES is your default.** When someone says "I have a black-box optimization problem," your first answer should be "try CMA-ES." It's robust, self-tuning, and well-understood theoretically.
-- **Population size matters.** Too small and you lose diversity; too large and you waste evaluations. CMA-ES has good defaults (roughly $4 + 3 \ln n$ for dimension $n$), but you can increase it for highly multimodal landscapes.
+- **Match the algorithm to the problem.** GA for combinatorial, CMA-ES for continuous black-box, DE for multimodal continuous, ACO for graph problems, GP for symbolic regression. The No Free Lunch theorem[^18] says no algorithm dominates everywhere - understanding each family's strengths is the real skill this course teaches.
+- **Population size matters.** Too small and you lose diversity (premature convergence); too large and you waste evaluations. Most algorithms have sensible defaults - trust them initially.
 - **Always plot the convergence curve.** It tells you more than the final answer. Is the algorithm still improving? Did it plateau early? Did it diverge? The shape of the curve is diagnostic.
-- **Normalize your search space.** If some variables range from 0 to 1 and others from 0 to 10,000, rescale them. ES algorithms treat all dimensions equally - give them dimensions that deserve equal treatment.
-- **Run multiple restarts.** A single CMA-ES run can get stuck in a local optimum. IPOP-CMA-ES (Module 05) automates this by increasing the population size with each restart.
+- **Normalize your search space.** If some variables range 0-1 and others 0-10,000, rescale them. EC algorithms treat all dimensions equally - give them dimensions that deserve equal treatment.
+- **Run multiple trials and report statistics.** EC is stochastic. A single run means nothing. Report means and standard deviations. Module 25 will make you rigorous about this.
+- **Read the original papers.** Holland, Rechenberg, Hansen, Dorigo, Kennedy, Koza, Deb, Stanley - they wrote clearly and their insights are timeless.
 
 ---
 
 ## Milestone Checklist
 
-- [ ] Installed `cma`, `nevergrad`, `deap`, and confirmed they work
-- [ ] Ran CMA-ES on the Sphere function and found the minimum
-- [ ] Plotted a population evolving on Rosenbrock
-- [ ] Visualized the Sphere, Rastrigin, and Rosenbrock landscapes
-- [ ] Understood the evaluate-select-mutate loop
-- [ ] Can explain when ES is preferable to gradient methods
+- [ ] Installed `cma`, `nevergrad`, `deap`, `pyswarms` and confirmed they work
+- [ ] Ran CMA-ES on Sphere and found the minimum
+- [ ] Ran a GA on Sphere using DEAP
+- [ ] Compared multiple algorithms using Nevergrad
+- [ ] Understand the evaluate-select-vary loop shared by all EC methods
+- [ ] Can name the major EC families and when each is appropriate
+- [ ] Understand where EC sits in the Computational Intelligence landscape
 
 ---
 
 ## Exercises
 
-1. **Dimension scaling**: Run CMA-ES on the Sphere function in 2, 5, 10, 20, and 50 dimensions. Plot the number of function evaluations needed vs. dimension. What's the relationship? (Spoiler: it's roughly quadratic, which is why high-dimensional optimization is hard.)
+1. **Algorithm shootout**: Use Nevergrad to compare CMA, PSO, DE, OnePlusOne, and RandomSearch on the Rastrigin function in 10 dimensions with a budget of 5,000 evaluations. Which wins? Run it 10 times - do the rankings change?
 
-2. **Algorithm shootout**: Use Nevergrad to compare CMA, PSO, OnePlusOne, DE (Differential Evolution), and RandomSearch on the Rastrigin function in 10 dimensions with a budget of 5,000 evaluations. Which wins? Run it 10 times - do the rankings change?
+2. **GA on OneMax**: Implement a simple binary GA using DEAP to solve the OneMax problem (maximize the number of 1s in a binary string of length 100). Plot the best fitness per generation. How many generations does it take to find the all-ones string?
 
-3. **Noise robustness**: Add Gaussian noise to the Sphere function: `f(x) = sum(x**2) + sigma * randn()`. Try sigma values of 0, 0.1, 1.0, and 10.0. How does CMA-ES handle increasing noise? What about basic (1+1)-ES?
+3. **Dimension scaling**: Run CMA-ES on Sphere in 2, 5, 10, 20, and 50 dimensions. Plot evaluations vs dimension. What's the relationship?
 
-4. **The Banana Valley**: Run CMA-ES on 2D Rosenbrock from starting points (5, 5), (-5, 5), (0, -10), and (-10, -10). Do they all converge to the same point? How many evaluations does each take? What does this tell you about the landscape?
+4. **Noise robustness**: Add Gaussian noise to Sphere: `f(x) = sum(x**2) + sigma * randn()`. Try sigma = 0, 0.1, 1.0, 10.0. How does CMA-ES handle it? How about DE (use `scipy.optimize.differential_evolution`)?
 
-5. **Real-world brainstorm**: Think of a real optimization problem where you *can't* compute a gradient. (Hint: anything involving a simulator, a physical experiment, human preferences, or combinatorial choices.) Describe it in terms of the ES framework: What's the solution vector? What's the fitness function? Why can't you differentiate it?
+5. **EC family identification**: For each problem below, identify which EC family would be most appropriate and explain why:
+   - Scheduling 50 jobs across 10 machines to minimize total completion time
+   - Finding a mathematical formula that fits a dataset of (x, y) pairs
+   - Optimizing 20 continuous parameters of a noisy physics simulator
+   - Designing a neural network architecture for image classification
+   - Finding the shortest route visiting 100 cities
 
 <CollapsibleOutput label="Exercise 1 Solution">
-
-```python
-import cma
-import numpy as np
-import matplotlib.pyplot as plt
-
-
-def sphere(x: np.ndarray) -> float:
-    return float(np.sum(x**2))
-
-
-dims = [2, 5, 10, 20, 50]
-evals_needed = []
-
-for d in dims:
-    es = cma.CMAEvolutionStrategy(
-        np.random.randn(d) * 5, 2.0,
-        {"verbose": -1, "tolx": 1e-12, "tolfun": 1e-14},
-    )
-    es.optimize(sphere)
-    evals_needed.append(es.result.evals)
-    print(f"Dim {d:3d}: {es.result.evals:6d} evaluations, "
-          f"best = {es.result.fbest:.2e}")
-
-plt.figure(figsize=(8, 5))
-plt.plot(dims, evals_needed, "o-", color="#00897b", markersize=10)
-plt.xlabel("Dimension")
-plt.ylabel("Function Evaluations")
-plt.title("CMA-ES Scaling on Sphere")
-plt.yscale("log")
-plt.grid(True, alpha=0.3)
-plt.show()
-```
-
-```
-Dim   2:    200 evaluations, best = 2.31e-25
-Dim   5:    850 evaluations, best = 1.87e-23
-Dim  10:   2400 evaluations, best = 3.97e-14
-Dim  20:   8500 evaluations, best = 8.12e-12
-Dim  50:  48000 evaluations, best = 1.44e-09
-```
-
-<DimensionScaling />
-
-The relationship is roughly **quadratic** - O(n²). Going from 2D to 50D means ~240x more evaluations. The dashed line shows an n² reference. This is actually quite good compared to grid search (which scales exponentially), but it's why problems above ~100 dimensions need specialized large-scale variants like sep-CMA-ES (Module 05).
-
-</CollapsibleOutput>
-
-<CollapsibleOutput label="Exercise 2 Solution">
 
 ```python
 import nevergrad as ng
@@ -564,7 +465,7 @@ def rastrigin(x: np.ndarray) -> float:
     return float(10 * n + np.sum(x**2 - 10 * np.cos(2 * np.pi * x)))
 
 
-algos = ["CMA", "PSO", "OnePlusOne", "DE", "RandomSearch"]
+algos = ["CMA", "PSO", "DE", "OnePlusOne", "RandomSearch"]
 results = defaultdict(list)
 
 for trial in range(10):
@@ -574,12 +475,12 @@ for trial in range(10):
         rec = opt.minimize(rastrigin)
         results[algo].append(rastrigin(rec.value))
 
-print(f"{'Algorithm':15s} {'Mean':>10s} {'Std':>10s} {'Best':>10s}")
+print(f"\{'Algorithm':15s\} \{'Mean':>10s\} \{'Std':>10s\} \{'Best':>10s\}")
 print("-" * 50)
 for algo in algos:
     vals = results[algo]
-    print(f"{algo:15s} {np.mean(vals):10.2f} {np.std(vals):10.2f} "
-          f"{np.min(vals):10.2f}")
+    print(f"\{algo:15s\} \{np.mean(vals):10.2f\} \{np.std(vals):10.2f\} "
+          f"\{np.min(vals):10.2f\}")
 ```
 
 ```
@@ -587,12 +488,12 @@ Algorithm            Mean        Std       Best
 --------------------------------------------------
 CMA                  4.23       2.87       0.99
 PSO                 18.41       6.53       8.95
-OnePlusOne          42.17      11.24      22.33
 DE                  12.85       5.91       3.98
+OnePlusOne          42.17      11.24      22.33
 RandomSearch        89.42      12.67      68.31
 ```
 
-CMA-ES wins most trials, but **rankings do change** across runs - Rastrigin is multimodal, so any single run might get unlucky. DE is competitive here because differential evolution handles multimodality well. The takeaway: always run multiple trials and report statistics, not single numbers. This is why Module 13 (Benchmarking) matters.
+CMA-ES and DE lead on Rastrigin. But rankings **do change** across runs - Rastrigin is multimodal, so any single run might get unlucky. This is why Module 25 (Benchmarking) matters: always run multiple trials and report statistics, not single numbers.
 
 </CollapsibleOutput>
 
@@ -603,74 +504,48 @@ import cma
 import numpy as np
 
 
-def noisy_sphere(x: np.ndarray, sigma_noise: float) -> float:
-    return float(np.sum(x**2) + sigma_noise * np.random.randn())
+def sphere(x: np.ndarray) -> float:
+    return float(np.sum(x**2))
 
 
-for sigma in [0.0, 0.1, 1.0, 10.0]:
+dims = [2, 5, 10, 20, 50]
+evals_needed = []
+
+for d in dims:
     es = cma.CMAEvolutionStrategy(
-        np.random.randn(10) * 3, 1.0,
-        {"verbose": -1, "noise_handling": sigma > 0},
+        np.random.randn(d) * 5, 2.0,
+        \{"verbose": -1, "tolx": 1e-12, "tolfun": 1e-14\},
     )
-    es.optimize(lambda x: noisy_sphere(x, sigma), iterations=300)
-    print(f"sigma={sigma:5.1f}: best={es.result.fbest:10.4f}, "
-          f"evals={es.result.evals}")
+    es.optimize(sphere)
+    evals_needed.append(es.result.evals)
+    print(f"Dim \{d:3d\}: \{es.result.evals:6d\} evaluations")
 ```
 
 ```
-sigma=  0.0: best=    0.0000, evals=  2180
-sigma=  0.1: best=    0.0023, evals=  2340
-sigma=  1.0: best=    0.1847, evals=  3120
-sigma= 10.0: best=    2.3150, evals=  4580
+Dim   2:    200 evaluations
+Dim   5:    850 evaluations
+Dim  10:   2400 evaluations
+Dim  20:   8500 evaluations
+Dim  50:  48000 evaluations
 ```
 
-CMA-ES **degrades gracefully** with noise. At σ=0.1, it barely notices. At σ=10.0, it still finds a reasonable solution but needs more evaluations and the reported "best" is dominated by noise. The `noise_handling=True` option in pycma enables uncertainty handling - it re-evaluates promising solutions to get better fitness estimates. A basic (1+1)-ES without population averaging struggles much more because it has no noise smoothing from population statistics.
+<DimensionScaling />
 
-</CollapsibleOutput>
-
-<CollapsibleOutput label="Exercise 4 Solution">
-
-```python
-import cma
-import numpy as np
-
-
-def rosenbrock(x: np.ndarray) -> float:
-    return float(sum(100 * (x[1:] - x[:-1]**2)**2 + (1 - x[:-1])**2))
-
-
-starts = [(5, 5), (-5, 5), (0, -10), (-10, -10)]
-for x0 in starts:
-    es = cma.CMAEvolutionStrategy(list(x0), 2.0, {"verbose": -1})
-    es.optimize(rosenbrock)
-    print(f"Start {str(x0):12s} → x*=[{es.result.xbest[0]:.4f}, "
-          f"{es.result.xbest[1]:.4f}], f*={es.result.fbest:.2e}, "
-          f"evals={es.result.evals}")
-```
-
-```
-Start (5, 5)     → x*=[1.0000, 1.0000], f*=3.21e-17, evals=1340
-Start (-5, 5)    → x*=[1.0000, 1.0000], f*=8.74e-16, evals=1680
-Start (0, -10)   → x*=[1.0000, 1.0000], f*=2.53e-15, evals=1820
-Start (-10, -10) → x*=[1.0000, 1.0000], f*=1.42e-13, evals=2450
-```
-
-All four starts converge to the global optimum (1, 1) - 2D Rosenbrock is unimodal, so there's nowhere else to go. But the **number of evaluations varies by ~2x** depending on starting point. Starting at (-10, -10) takes longest because the algorithm must travel farthest along the curved valley. The initial sigma of 2.0 is generous enough for CMA-ES to explore the space. If you set sigma too small (try 0.01), the algorithm might get trapped near the starting point's local gradient direction and take much longer.
+The relationship is roughly **O(n^2)**. Going from 2D to 50D means ~240x more evaluations. The dashed line shows an n^2 reference. This is actually quite good compared to grid search (which scales exponentially), but it's why problems above ~100 dimensions need specialized large-scale variants like sep-CMA-ES (Module 08).
 
 </CollapsibleOutput>
 
 <CollapsibleOutput label="Exercise 5 Solution">
 
-**Example: Tuning a Coffee Roasting Profile**
+- **Scheduling 50 jobs on 10 machines** - **Genetic Algorithm** with permutation encoding. GAs handle combinatorial problems well with order crossover (OX) and swap mutation. ACO is also a strong choice for scheduling - it naturally handles the graph structure of job-machine assignments.
 
-A coffee roaster wants to find the temperature curve that maximizes flavor score (rated by a panel of tasters).
+- **Finding a formula for (x, y) data** - **Genetic Programming**. GP evolves tree-structured expressions and is specifically designed for symbolic regression - discovering mathematical formulas from data. Use `gplearn` for a quick start, or build your own tree GP in Module 09.
 
-- **Solution vector**: $\mathbf{x} \in \mathbb{R}^{8}$ - temperatures at 8 time points during the roast (30s, 60s, ..., 240s), interpolated into a continuous profile.
-- **Fitness function**: $f(\mathbf{x})$ = average panel score (1-10) from 3 blind tasters. Lower is better, so negate it: minimize $-f(\mathbf{x})$.
-- **Why no gradient?** The mapping from temperature curve → chemical reactions → flavor perception involves Maillard reactions, caramelization, and human taste - none of which have a differentiable mathematical model. Each evaluation requires physically roasting beans and having humans taste the result.
-- **ES approach**: Start with the roaster's current best profile as the initial mean. Use CMA-ES with σ=5°C. Each generation = a batch of roasts. After 20-30 generations (60-90 roasts), you'd likely find a profile the tasters prefer.
+- **Optimizing 20 continuous noisy parameters** - **CMA-ES**. Gold standard for continuous black-box optimization, and its population-based evaluation naturally smooths out noise. DE is a solid alternative, especially if the landscape is highly multimodal.
 
-Other great examples: hyperparameter tuning for ML models (the training pipeline is a black box), drug molecule optimization (fitness = binding affinity from simulation), game level design (fitness = player engagement metrics), or structural engineering (fitness = stress test results from FEA simulation).
+- **Designing a neural network architecture** - **Neuroevolution (NEAT/HyperNEAT)** for small-medium networks, or evolutionary NAS for larger ones. The search space is discrete and structured (number of layers, types of layers, connections), which rules out gradient methods. This is covered in Modules 19-20.
+
+- **Shortest route visiting 100 cities** - **Ant Colony Optimization**. ACO was literally invented for TSP-like problems. The pheromone model naturally guides the colony through the graph of possible edges. GA with order crossover is a solid alternative, as covered in Module 03.
 
 </CollapsibleOutput>
 
@@ -678,28 +553,38 @@ Other great examples: hyperparameter tuning for ML models (the training pipeline
 
 ## References
 
-[^1]: Hornby, G.S. et al. (2011). "Automated Antenna Design with Evolutionary Algorithms." *AIAA Space Conference*. The NASA ST5 antenna remains one of the most famous examples of evolved design. https://ti.arc.nasa.gov/tech/asr/gps/antenna/
+[^1]: Hornby, G.S. et al. (2011). "Automated Antenna Design with Evolutionary Algorithms." *AIAA Space Conference*. https://ti.arc.nasa.gov/tech/asr/gps/antenna/
 
-[^2]: Salimans, T. et al. (2017). "Evolution Strategies as a Scalable Alternative to Reinforcement Learning." *arXiv*. The paper that made the deep learning community take ES seriously. https://arxiv.org/abs/1703.03864
+[^2]: Thompson, A. (1997). "An Evolved Circuit, Intrinsic in Silicon, Entwined with Physics." *Proc. 1st International Conference on Evolvable Systems (ICES)*. https://doi.org/10.1007/3-540-63173-9_61
 
-[^3]: Hansen, N. (2016). "The CMA Evolution Strategy: A Tutorial." *arXiv*. The definitive guide by the inventor of CMA-ES. Read this alongside Module 04. https://arxiv.org/abs/1604.00772
+[^3]: Holland, J.H. (1975). *Adaptation in Natural and Artificial Systems*. University of Michigan Press. The foundational text on Genetic Algorithms.
 
-[^4]: Hansen, N. et al. (2021). "COCO: A Platform for Comparing Continuous Optimizers in a Black-Box Setting." *Optimization Methods and Software*. https://github.com/numbbo/coco
+[^4]: Rechenberg, I. (1973). *Evolutionsstrategie*. Frommann-Holzboog. The founding text of Evolution Strategies. See also Beyer & Schwefel (2002): https://doi.org/10.1023/A:1015059928466
 
-[^5]: Stanley, K.O. & Miikkulainen, R. (2002). "Evolving Neural Networks through Augmenting Topologies." *Evolutionary Computation*, 10(2). https://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf
+[^5]: Koza, J.R. (1992). *Genetic Programming: On the Programming of Computers by Means of Natural Selection*. MIT Press.
 
-[^6]: Mouret, J.-B. & Clune, J. (2015). "Illuminating search spaces by mapping elites." *arXiv*. The paper that launched Quality-Diversity. https://arxiv.org/abs/1504.04909
+[^6]: Storn, R. & Price, K. (1997). "Differential Evolution - A Simple and Efficient Heuristic for Global Optimization." *Journal of Global Optimization*, 11(4). https://doi.org/10.1023/A:1008202821328
 
-[^7]: Saha, S. & Gan, Z. (2021). "Evolutionary optimization in engineering design." BMW Group Research. https://doi.org/10.1007/978-981-15-3685-4
+[^7]: Kennedy, J. & Eberhart, R. (1995). "Particle Swarm Optimization." *Proc. IEEE International Conference on Neural Networks*. https://doi.org/10.1109/ICNN.1995.488968
 
-[^8]: Jensen, J.H. (2019). "A graph-based genetic algorithm and generative model/Monte Carlo tree search for the exploration of chemical space." *Chemical Science*. https://doi.org/10.1039/C8SC05372C
+[^8]: Dorigo, M. et al. (1996). "Ant System: Optimization by a Colony of Cooperating Agents." *IEEE Trans. on Systems, Man, and Cybernetics*. See also: *Ant Colony Optimization* (MIT Press, 2004).
 
-[^9]: Perez, D. et al. (2016). "The General Video Game AI Competition." *IEEE Transactions on Games*. https://doi.org/10.1109/TCIAIG.2015.2게2402561
+[^9]: Stanley, K.O. & Miikkulainen, R. (2002). "Evolving Neural Networks through Augmenting Topologies." *Evolutionary Computation*, 10(2). https://nn.cs.utexas.edu/downloads/papers/stanley.ec02.pdf
 
-[^10]: Rechenberg, I. (1973). *Evolutionsstrategie: Optimierung technischer Systeme nach Prinzipien der biologischen Evolution*. Frommann-Holzboog. The founding text of Evolution Strategies. Beyer & Schwefel (2002) provide an excellent English-language survey: https://doi.org/10.1023/A:1015059928466
+[^10]: Deb, K. et al. (2002). "A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II." *IEEE Trans. on Evolutionary Computation*, 6(2). https://doi.org/10.1109/4235.996017
 
-[^11]: Holland, J.H. (1975). *Adaptation in Natural and Artificial Systems*. University of Michigan Press. The foundational text on Genetic Algorithms.
+[^11]: Mouret, J.-B. & Clune, J. (2015). "Illuminating search spaces by mapping elites." *arXiv*. https://arxiv.org/abs/1504.04909
 
-[^12]: Chen, Y. et al. (2023). "EvoPrompting: Language Models for Code-Level Neural Architecture Search." *ICML*. ES applied to LLM-assisted architecture search. https://arxiv.org/abs/2302.14838
+[^12]: Engelbrecht, A.P. (2007). *Computational Intelligence: An Introduction* (2nd ed.). Wiley.
 
-[^13]: Eiben, A.E. & Smith, J.E. (2015). *Introduction to Evolutionary Computing* (2nd ed.). Springer. The best modern textbook on evolutionary computation - covers ES, GA, GP, and more with excellent clarity. https://link.springer.com/book/10.1007/978-3-662-44874-8
+[^13]: Hansen, N. (2016). "The CMA Evolution Strategy: A Tutorial." *arXiv*. https://arxiv.org/abs/1604.00772
+
+[^14]: Salimans, T. et al. (2017). "Evolution Strategies as a Scalable Alternative to Reinforcement Learning." *arXiv*. https://arxiv.org/abs/1703.03864
+
+[^15]: Chen, Y. et al. (2023). "EvoPrompting: Language Models for Code-Level Neural Architecture Search." *ICML*. https://arxiv.org/abs/2302.14838
+
+[^16]: Saha, S. & Gan, Z. (2021). "Evolutionary optimization in engineering design." BMW Group Research. https://doi.org/10.1007/978-981-15-3685-4
+
+[^17]: Eiben, A.E. & Smith, J.E. (2015). *Introduction to Evolutionary Computing* (2nd ed.). Springer. https://link.springer.com/book/10.1007/978-3-662-44874-8
+
+[^18]: Wolpert, D.H. & Macready, W.G. (1997). "No Free Lunch Theorems for Optimization." *IEEE Trans. on Evolutionary Computation*, 1(1). https://doi.org/10.1109/4235.585893

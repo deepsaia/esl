@@ -27,7 +27,7 @@ export default function FeedbackWidget(): React.JSX.Element {
             <>
               {' '}
               <a
-                href={`https://github.com/deepsaia/esl/issues/new?title=${encodeURIComponent('[Feedback] ' + (typeof document !== 'undefined' ? document.title : ''))}&body=${encodeURIComponent('Page: ' + (typeof window !== 'undefined' ? window.location.href : '') + '\n\nWhat was missing or confusing?')}`}
+                href={`https://github.com/deepsaia/ecl/issues/new?title=${encodeURIComponent('[Feedback] ' + (typeof document !== 'undefined' ? document.title : ''))}&body=${encodeURIComponent('Page: ' + (typeof window !== 'undefined' ? window.location.href : '') + '\n\nWhat was missing or confusing?')}`}
                 target="_blank"
                 rel="noopener noreferrer"
               >
