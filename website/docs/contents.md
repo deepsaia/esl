@@ -9,7 +9,7 @@ title: Course Contents
 
 1. **Foundations**: Setup, optimization basics, why derivative-free methods matter.
 2. **Core ES algorithms**: (1+1)-ES, population-based ES, self-adaptation.
-3. **CMA-ES**: The crown jewel — basics through advanced variants.
+3. **CMA-ES**: The crown jewel - basics through advanced variants.
 4. **NES & Neuroevolution**: Natural gradients, evolving neural networks.
 5. **ES for RL**: OpenAI's scalable approach to policy optimization.
 6. **Broader evolutionary computation**: GAs, multi-objective, quality diversity, constraints.
@@ -29,10 +29,10 @@ title: Course Contents
 ## Recommended resources
 
 ### Books
-* **Introduction to Evolutionary Computing** by Eiben & Smith — the standard textbook.
-* **The CMA Evolution Strategy: A Tutorial** by Nikolaus Hansen — essential CMA-ES reading.
-* **Algorithms for Optimization** by Kochenderfer & Wheeler — broader optimization context.
-* **Essentials of Metaheuristics** by Sean Luke — accessible and free online.
+* **Introduction to Evolutionary Computing** by Eiben & Smith - the standard textbook.
+* **The CMA Evolution Strategy: A Tutorial** by Nikolaus Hansen - essential CMA-ES reading.
+* **Algorithms for Optimization** by Kochenderfer & Wheeler - broader optimization context.
+* **Essentials of Metaheuristics** by Sean Luke - accessible and free online.
 
 ### Key papers
 * Hansen & Ostermeier (2001): "Completely Derandomized Self-Adaptation in Evolution Strategies"
@@ -43,13 +43,13 @@ title: Course Contents
 * Deb et al. (2002): "A Fast and Elitist Multiobjective Genetic Algorithm: NSGA-II"
 
 ### Key libraries
-* `cma` (pycma) — reference CMA-ES implementation
-* `nevergrad` — Facebook's gradient-free optimization platform
-* `deap` — Distributed Evolutionary Algorithms in Python
-* `evosax` — JAX-based ES library (GPU-accelerated)
-* `pymoo` — multi-objective optimization framework
-* `neat-python` — NEAT implementation
-* `qdax` — Quality-Diversity algorithms in JAX
+* `cma` (pycma) - reference CMA-ES implementation
+* `nevergrad` - Facebook's gradient-free optimization platform
+* `deap` - Distributed Evolutionary Algorithms in Python
+* `evosax` - JAX-based ES library (GPU-accelerated)
+* `pymoo` - multi-objective optimization framework
+* `neat-python` - NEAT implementation
+* `qdax` - Quality-Diversity algorithms in JAX
 
 ---
 

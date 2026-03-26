@@ -56,7 +56,7 @@ def generate_cmaes_convergence(seed: int = 42) -> list[dict]:
 
 
 def generate_algorithm_comparison(seed: int = 42) -> list[dict]:
-    """Compare algorithms on Sphere(10D) — run each multiple times."""
+    """Compare algorithms on Sphere(10D) - run each multiple times."""
     import nevergrad as ng
 
     rows = []

@@ -1,7 +1,7 @@
 [project]
 name = "esl"
 version = "0.1.0"
-description = "Evolution Strategies Learning — a hands-on course"
+description = "Evolution Strategies Learning - a hands-on course"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
