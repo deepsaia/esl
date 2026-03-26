@@ -42,7 +42,7 @@ const config: Config = {
       'classic',
       {
         docs: {
-          routeBasePath: '/',
+          routeBasePath: '/course',
           sidebarPath: './sidebars.ts',
           remarkPlugins: [remarkMath],
           rehypePlugins: [rehypeKatex],
@@ -93,7 +93,8 @@ const config: Config = {
           title: 'Course',
           items: [
             {label: 'Home', to: '/'},
-            {label: 'Contents', to: '/contents'},
+            {label: 'Modules', to: '/course'},
+            {label: 'Contents', to: '/course/contents'},
           ],
         },
         {
