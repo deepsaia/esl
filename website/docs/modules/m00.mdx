@@ -3,6 +3,10 @@ sidebar_position: 1
 title: "Module 00: Introduction"
 ---
 
+import CMAESConvergence from '@site/src/components/Charts/m00/CMAESConvergence';
+import FitnessLandscape from '@site/src/components/Charts/m00/FitnessLandscape';
+import AlgorithmComparison from '@site/src/components/Charts/m00/AlgorithmComparison';
+
 # Module 00: Introduction
 
 In 2006, NASA needed an antenna for its Space Technology 5 mission. The requirements were brutal: it had to work across multiple frequencies, fit on a tiny satellite, and survive the vibrations of a rocket launch. Human engineers had spent months trying to design one. Nothing worked well enough.
@@ -208,6 +212,10 @@ print(f"Function evaluations: {result.evals}")
 
 Run this. CMA-ES will find the optimum in roughly 2,000–4,000 function evaluations, depending on how far the starting point is. Not bad for a 10-dimensional search with no gradient information.
 
+Here's what CMA-ES convergence looks like — notice the log scale. On Sphere it converges fast; Rosenbrock's narrow valley takes longer:
+
+<CMAESConvergence />
+
 ### Using Nevergrad
 
 Nevergrad gives you a unified interface to dozens of optimization algorithms:
@@ -235,6 +243,10 @@ for algo_name in ["CMA", "PSO", "OnePlusOne", "RandomSearch"]:
 ```
 
 This gives you an instant comparison. You'll see CMA-ES crushing the others, RandomSearch doing surprisingly OK (it's hard to fail on a sphere), and PSO and (1+1)-ES somewhere in between.
+
+Here's the result — CMA-ES wins by orders of magnitude:
+
+<AlgorithmComparison />
 
 ---
 
@@ -341,6 +353,11 @@ plt.show()
 **Sphere** is a smooth bowl — everything points toward the minimum. Any optimizer can solve this.
 
 **Rastrigin** looks like an egg carton. It has one global minimum but hundreds of local minima that trap greedy methods. Hill climbing would get stuck immediately. ES handles this because it maintains a *population* — even if some individuals fall into traps, others keep exploring.
+
+Zoom and pan on this interactive Rastrigin landscape — the red star marks the global optimum at (0, 0), surrounded by a minefield of local traps:
+
+<FitnessLandscape />
+
 
 **Rosenbrock** has a narrow, curved valley. The global minimum is inside the valley at (1, 1), but the valley floor is nearly flat, making it hard to navigate. This is where CMA-ES shines — it learns the shape of the valley.
 
