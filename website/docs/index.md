@@ -20,7 +20,7 @@ Whether you're here to understand CMA-ES, evolve a neural network, or watch a po
 
 | Module | Topic |
 |--------|-------|
-| [00](/course/modules/m00) | Setup & Tools |
+| [00](/course/modules/m00) | Introduction |
 | [01](/course/modules/m01) | Optimization Foundations |
 | [02](/course/modules/m02) | The (1+1)-ES |
 | [03](/course/modules/m03) | Population-Based ES |

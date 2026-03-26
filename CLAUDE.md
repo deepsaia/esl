@@ -16,7 +16,7 @@ This is a **hands-on Evolution Strategies course** — a structured, module-by-m
 
 | Module | Topic |
 |--------|-------|
-| 00 | Setup & Tools |
+| 00 | Introduction |
 | 01 | Optimization Foundations |
 | 02 | The (1+1)-ES |
 | 03 | Population-Based ES |

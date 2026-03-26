@@ -9,7 +9,7 @@ interface ModuleInfo {
 }
 
 const modules: ModuleInfo[] = [
-  {id: 'm00', title: 'Setup & Tools', description: 'Install libraries, run your first optimization, visualize populations', icon: '\u{1F6E0}\u{FE0F}'},
+  {id: 'm00', title: 'Introduction', description: 'Why ES matters, setup your lab, run your first optimization', icon: '\u{1F6E0}\u{FE0F}'},
   {id: 'm01', title: 'Optimization Foundations', description: 'Random search, hill climbing, fitness landscapes', icon: '\u{1F3D4}\u{FE0F}'},
   {id: 'm02', title: 'The (1+1)-ES', description: "Rechenberg's 1/5th rule, Gaussian mutation, step-size adaptation", icon: '\u{1F9EC}'},
   {id: 'm03', title: 'Population-Based ES', description: '(\u00B5,\u03BB)-ES, (\u00B5+\u03BB)-ES, recombination, self-adaptation', icon: '\u{1F465}'},
